@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOL Master Calculator - Dr. Bhargava</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/iol-calculator.css">
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1 class="practice-name">Dr. Bhargava</h1>
+            <p class="tagline">Glaucoma & Cataract Specialist</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="diseases.html">Eye Diseases</a></li>
+            <li><a href="surgeries.html">Surgeries</a></li>
+            <li><a href="iol-calculator.html" class="active">IOL Calculator</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="container calculator-container">
+            <div class="calculator-header">
+                <h1>IOL Master Calculator</h1>
+                <p class="subtitle">Automated IOL Master to Alcon Toric Calculator</p>
+            </div>
+
+        <div class="upload-section">
+            <h2>Step 1: Upload IOL Master Sheet</h2>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" accept="image/*" capture="camera">
+                <label for="fileInput" class="upload-label">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Take Photo or Upload Image</span>
+                    <span class="file-info">Supports JPG, PNG</span>
+                </label>
+            </div>
+            <div id="imagePreview" class="image-preview" style="display:none;">
+                <img id="previewImg" alt="IOL Master Sheet Preview">
+            </div>
+            <div id="processingStatus" class="processing-status" style="display:none;">
+                <div class="spinner"></div>
+                <p>Processing image and extracting data...</p>
+            </div>
+        </div>
+
+        <div id="extractedDataSection" class="extracted-data-section" style="display:none;">
+            <h2>Step 2: Select Eye</h2>
+            <div class="eye-selection">
+                <button class="eye-btn" id="odBtn" data-eye="OD">
+                    <span class="eye-label">OD</span>
+                    <span class="eye-desc">Right Eye</span>
+                </button>
+                <button class="eye-btn" id="osBtn" data-eye="OS">
+                    <span class="eye-label">OS</span>
+                    <span class="eye-desc">Left Eye</span>
+                </button>
+            </div>
+
+            <h2>Step 3: Verify Extracted Values</h2>
+            <div class="data-display" id="dataDisplay">
+                <div class="patient-info">
+                    <div class="info-row">
+                        <label>Surgeon:</label>
+                        <input type="text" id="surgeonName" value="Bhargava" readonly>
+                    </div>
+                    <div class="info-row">
+                        <label>Patient:</label>
+                        <input type="text" id="patientName" value="Patient1" readonly>
+                    </div>
+                    <div class="info-row">
+                        <label>Selected Eye:</label>
+                        <span id="selectedEye" class="selected-eye-display">-</span>
+                    </div>
+                </div>
+
+                <div class="measurements-grid">
+                    <div class="measurement-group">
+                        <h3>Biometry</h3>
+                        <div class="measurement-item">
+                            <label>Axial Length (AL):</label>
+                            <input type="number" id="axialLength" step="0.01"> mm
+                        </div>
+                        <div class="measurement-item">
+                            <label>Anterior Chamber Depth (ACD):</label>
+                            <input type="number" id="acd" step="0.01"> mm
+                        </div>
+                        <div class="measurement-item">
+                            <label>Lens Thickness (LT):</label>
+                            <input type="number" id="lensThickness" step="0.01"> mm
+                        </div>
+                    </div>
+
+                    <div class="measurement-group">
+                        <h3>Keratometry</h3>
+                        <div class="measurement-item">
+                            <label>Flat K (K1):</label>
+                            <input type="number" id="flatK" step="0.01"> D
+                        </div>
+                        <div class="measurement-item">
+                            <label>Flat Meridian:</label>
+                            <input type="number" id="flatMeridian" step="1"> °
+                        </div>
+                        <div class="measurement-item">
+                            <label>Steep K (K2):</label>
+                            <input type="number" id="steepK" step="0.01"> D
+                        </div>
+                        <div class="measurement-item">
+                            <label>Steep Meridian:</label>
+                            <input type="number" id="steepMeridian" step="1"> °
+                        </div>
+                    </div>
+
+                    <div class="measurement-group">
+                        <h3>Additional Parameters</h3>
+                        <div class="measurement-item">
+                            <label>K Index:</label>
+                            <input type="number" id="kIndex" value="1.3375" step="0.0001">
+                        </div>
+                        <div class="measurement-item">
+                            <label>Formula:</label>
+                            <select id="formula">
+                                <option value="Barrett">Barrett</option>
+                                <option value="Holladay">Holladay</option>
+                            </select>
+                        </div>
+                        <div class="measurement-item">
+                            <label>SIA:</label>
+                            <input type="number" id="sia" value="0.5" step="0.1"> D
+                        </div>
+                        <div class="measurement-item">
+                            <label>Incision Location:</label>
+                            <input type="number" id="incisionLocation" value="180" step="1"> °
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Step 4: Fill Alcon Calculator</h2>
+            <div class="action-buttons">
+                <button class="btn-primary" id="fillCalculatorBtn" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    Open & Fill Alcon Calculator
+                </button>
+                <button class="btn-secondary" id="copyDataBtn" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy Values to Clipboard
+                </button>
+                <button class="btn-secondary" id="resetBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    Start Over
+                </button>
+            </div>
+
+            <div class="instructions-box">
+                <h3>How Auto-Fill Works:</h3>
+                <ol>
+                    <li>Click "Open & Fill Alcon Calculator" button</li>
+                    <li>A new tab will open with the Alcon Toric Calculator</li>
+                    <li>Return to this tab and copy the bookmarklet code</li>
+                    <li>Go back to the Alcon calculator tab and paste in the console (F12)</li>
+                    <li>The form will auto-fill with your extracted values</li>
+                </ol>
+                <p><strong>Alternative:</strong> Use "Copy Values to Clipboard" to manually enter them.</p>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display:none;"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Dr. Bhargava - Glaucoma & Cataract Specialist. All rights reserved.</p>
+        <p>Specialized surgical care for glaucoma and cataracts.</p>
+    </footer>
+
+    <script src="js/iol-calculator.js"></script>
+</body>
+</html>
